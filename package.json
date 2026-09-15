@@ -1,0 +1,17 @@
+{
+  "name": "sketchbrawl_server",
+  "version": "1.0.0",
+  "description": "SketchBrawl 中間サーバー(フェーズ1: ストローク→画像化→Gemini無料枠で判定)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^3.2.3",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}
