@@ -36,11 +36,13 @@ app.post("/judge", async (req, res) => {
     // Roblox側と共有しているシークレットで簡易認証(なりすましリクエスト対策)
     const authHeader = req.headers["x-sketchbrawl-secret"];
     if (!SHARED_SECRET || authHeader !== SHARED_SECRET) {
+      console.log("[/judge] rejected: unauthorized (secret mismatch)");
       return res.status(401).json({ error: "unauthorized" });
     }
 
     const clientKey = req.ip;
     if (isRateLimited(clientKey)) {
+      console.log(`[/judge] rejected: rate_limited (ip=${clientKey})`);
       return res.status(429).json({ error: "rate_limited" });
     }
 
@@ -60,6 +62,11 @@ app.post("/judge", async (req, res) => {
 
     // 3. スコア+乱数からTier・ステータス・能力を計算(ゲームバランスはこちら側で制御)
     const weaponData = buildWeaponFromAiScore(aiResult);
+
+    // デバッグ用ログ(判定のたびに結果を記録。問題の切り分けに使う)
+    console.log(
+      `[/judge] result: isInappropriate=${aiResult.isInappropriate} category=${aiResult.category} complexity=${aiResult.complexity} clarity=${aiResult.clarity} tier=${weaponData.tier || "-"}`
+    );
 
     return res.json(weaponData);
   } catch (err) {
